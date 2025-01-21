@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -7,6 +8,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Alert,
+  RefreshControl,
 } from "react-native";
 import { Appbar, Snackbar } from "react-native-paper";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -18,6 +20,7 @@ const TaskDetails = () => {
   const { id } = useLocalSearchParams(); // Get the task ID from the route params
   const [taskDetails, setTaskDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false); // State for refresh control
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarVisible, setSnackbarVisible] = useState(false);
   const [issuedCount, setIssuedCount] = useState(0);
@@ -35,7 +38,6 @@ const TaskDetails = () => {
     try {
       const response = await axios.get(`${BASEURL}/fetch-task-details/${id}`);
       const customers = response.data.customers;
-      console.log(`customers ${JSON.stringify(customers)}`);
       setTaskDetails(response.data);
 
       // Calculate issued and pending counts
@@ -49,23 +51,33 @@ const TaskDetails = () => {
       setSnackbarVisible(true);
     } finally {
       setLoading(false);
+      setRefreshing(false); // Stop refresh control
     }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true); // Show the refresh control indicator
+    fetchTaskDetails();
   };
 
   const markAsIssued = async (customerId) => {
     try {
-      await axios.post(`${BASEURL}/trashbag-issed`, {
-        taskId: id,
-        customerId,
-      });
+      // Call the API with the task ID in the URL and customerId in the body
+      const response = await axios.post(
+        `${BASEURL}/trashbag-issed/${id}`, // Assuming `id` is the taskId
+        {
+          customerId, // Request body as per API expectation
+        }
+      );
+  
       Alert.alert("Success", "Customer has been marked as issued.");
       fetchTaskDetails(); // Refresh task details after marking as issued
     } catch (error) {
       console.error("Error marking customer as issued:", error);
-      Alert.alert("Error", "Failed to mark customer as issued.");
+      Alert.alert("Error", error.response?.data?.error || "Failed to mark customer as issued.");
     }
   };
-
+  
   const renderCustomer = (customer) => (
     <View
       key={customer.customerId}
@@ -76,7 +88,7 @@ const TaskDetails = () => {
     >
       <Text style={styles.customerName}>{customer.name}</Text>
       <Text>Phone: {customer.phoneNumber}</Text>
-      {customer.bagsIssued ? (
+      {customer.trashBagsIssued ? (
         <Text style={styles.issuedText}>Bags Issued</Text>
       ) : (
         <TouchableOpacity
@@ -88,6 +100,7 @@ const TaskDetails = () => {
       )}
     </View>
   );
+  
 
   if (loading) {
     return <ActivityIndicator size="large" style={styles.loader} />;
@@ -108,7 +121,12 @@ const TaskDetails = () => {
         <Appbar.Content title="Task Details" />
       </Appbar.Header>
 
-      <ScrollView contentContainerStyle={styles.contentContainer}>
+      <ScrollView
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         <View style={styles.taskInfo}>
           <Text style={styles.taskType}>{taskDetails.taskDetails.type}</Text>
           <Text>Status: {taskDetails.taskDetails.status}</Text>
@@ -140,6 +158,8 @@ const TaskDetails = () => {
     </View>
   );
 };
+
+
 
 const styles = StyleSheet.create({
   container: {

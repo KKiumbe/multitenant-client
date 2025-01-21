@@ -16,6 +16,7 @@ const SignUpScreen = () => {
     gender: 'male', // Default gender
     password: '',
     confirmPassword: '',
+    tenantName: '', // New field for organization name
   });
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -29,7 +30,7 @@ const SignUpScreen = () => {
   };
 
   const validateFields = () => {
-    const requiredFields = ['firstName', 'lastName', 'phoneNumber', 'email', 'county', 'town', 'gender', 'password'];
+    const requiredFields = ['firstName', 'lastName', 'phoneNumber', 'email', 'county', 'town', 'gender', 'password', 'tenantName']; // Include organizationName in validation
     for (const field of requiredFields) {
       if (!formData[field]) {
         setErrorMessage(`${field.replace(/([A-Z])/g, ' $1')} is required.`);
@@ -53,7 +54,7 @@ const SignUpScreen = () => {
 
     setLoading(true);
 
-    const { confirmPassword, ...payload } = formData;
+    const { confirmPassword, ...payload } = formData; // Exclude confirmPassword
 
     try {
       const response = await fetch(`${BASEURL}/signup`, {
@@ -61,7 +62,7 @@ const SignUpScreen = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(payload), // Sending organizationName along with other fields
       });
 
       if (!response.ok) {
@@ -81,6 +82,7 @@ const SignUpScreen = () => {
         gender: 'male',
         password: '',
         confirmPassword: '',
+        tenantName: '', // Reset the organization name field
       });
     } catch (error) {
       setErrorMessage(error.message);
@@ -137,6 +139,13 @@ const SignUpScreen = () => {
         label="Town *"
         value={formData.town}
         onChangeText={(value) => handleChange('town', value)}
+        style={styles.input}
+      />
+      {/* Organization Name input */}
+      <TextInput
+        label="Organization Name *" // New field label
+        value={formData.tenantName}
+        onChangeText={(value) => handleChange('tenantName', value)}
         style={styles.input}
       />
 

@@ -46,6 +46,7 @@ const HomeScreen = () => {
       
       );
       setDashboardStats(response.data.data);
+
     } catch (error) {
       if (error.response?.status === 401) {
         await AsyncStorage.removeItem('user');
@@ -65,7 +66,10 @@ const HomeScreen = () => {
 
      
       const response = await axios.get(`${BASEURL}/get-sms-balance`);
+      console.log(`this is sms bal ${JSON.stringify(response.data)}`);
       setSmsBalance(response.data.credit);
+
+     
     } catch (error) {
       Alert.alert('Error', 'Could not fetch SMS balance.');
     }

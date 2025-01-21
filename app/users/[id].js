@@ -37,7 +37,7 @@ const UserPage = () => {
       const response = await axios.get(`${BASEURL}/users/${id}`);
       console.log(response.data);
       setUser(response.data);
-      setRoles(response.data.roles || []);
+      setRoles(response.data.role || []);
       setError(null); // Clear any previous errors
     } catch (err) {
       setError(err.message);
@@ -74,14 +74,16 @@ const UserPage = () => {
 
   const handleSubmitRoles = async () => {
     try {
-      const payload = { id, roles };
+      const payload = { 
+        userId: id, // Ensure the key is `userId` as per the API requirements
+        role: roles // Use `role` to match the API schema
+      };
       await axios.post(`${BASEURL}/assign-roles`, payload);
       Alert.alert("Success", "Roles assigned successfully!");
     } catch (err) {
       Alert.alert("Error", `Failed to assign roles: ${err.message}`);
     }
   };
-
   if (loading) {
     return (
       <View style={styles.loadingContainer}>

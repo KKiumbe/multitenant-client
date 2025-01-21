@@ -37,56 +37,56 @@ const MENU_ITEMS = [
     component: CollectionPage,
     label: 'Collection',
     icon: 'trash-outline',
-    roles: ['collector', 'admin', 'customer_manager'],
+    roles: ['collector', 'ADMIN', 'customer_manager'],
   },
   {
     name: 'Customers',
     component: CustomersPage,
     label: 'Customers',
     icon: 'people-outline',
-    roles: ['admin', 'customer_manager'],
+    roles: ['ADMIN', 'customer_manager'],
   },
   {
     name: 'Invoices',
     component: InvoicesPage,
     label: 'Invoices',
     icon: 'document-text-outline',
-    roles: ['admin', 'accountant', 'customer_manager'],
+    roles: ['ADMIN', 'accountant', 'customer_manager'],
   },
   {
     name: 'Payments',
     component: PaymentsPage,
     label: 'Payments',
     icon: 'card-outline',
-    roles: ['admin', 'accountant', 'customer_manager'],
+    roles: ['ADMIN', 'accountant', 'customer_manager'],
   },
   {
     name: 'Receipting',
     component: ReceiptingPage,
     label: 'Receipts',
     icon: 'receipt-outline',
-    roles: ['admin', 'accountant', 'customer_manager'],
+    roles: ['ADMIN', 'accountant', 'customer_manager'],
   },
   {
     name: 'Messages',
     component: SMSoutbox,
     label: 'Sent SMS',
     icon: 'chatbubble-outline',
-    roles: ['admin', 'customer_manager'],
+    roles: ['ADMIN', 'customer_manager'],
   },
   {
     name: 'Management',
     component: UserManagement,
     label: 'Users',
     icon: 'person-outline',
-    roles: ['admin'],
+    roles: ['ADMIN'],
   },
   {
     name: 'Reports',
     component: ReportsPage,
     label: 'Reports',
     icon: 'document-attach',
-    roles: ['admin'], // Accessible by all roles
+    roles: ['ADMIN'], // Accessible by all roles
   },
   {
     name: 'Tasks',
@@ -100,7 +100,7 @@ const MENU_ITEMS = [
     component: AssignTasks,
     label: 'Assign Trash Bag Tasks',
     icon: 'person-add-outline',
-    roles: ['admin'], // Accessible by all roles
+    roles: ['ADMIN'], // Accessible by all roles
   },
   {
     name: 'Profile',
@@ -146,7 +146,7 @@ export default function DrawerLayout() {
   const accessibleMenuItems = MENU_ITEMS.filter(
     (item) =>
       item.roles.length === 0 || // Accessible by all roles
-      (currentUser?.roles && currentUser.roles.some((role) => item.roles.includes(role)))
+      (currentUser?.role && currentUser.role.some((role) => item.roles.includes(role)))
   );
 
   return (

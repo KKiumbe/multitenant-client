@@ -43,16 +43,16 @@ const AssignTaskScreen = () => {
     try {
       const response = await axios.get(`${BASEURL}/users`);
       const collectors = response.data.users.filter((user) =>
-        user.roles.includes("collector")
+        user.role.includes("collector")
       );
       setUsers(collectors);
     } catch (error) {
-      console.error("Error fetching users:", error);
-      setSnackbarMessage("Failed to fetch users.");
+      const message = error.response?.data?.message || "Failed to fetch users.";
+      setSnackbarMessage(message);
       setSnackbarVisible(true);
     }
   };
-
+  
   const assignTask = async () => {
     if (!assigneeId || !collectionDay || !declaredBags) {
       Alert.alert("Error", "All fields are required.");

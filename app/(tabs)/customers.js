@@ -42,6 +42,7 @@ const Customers = React.memo(() => {
   const currentUser = useAuthStore(state => state.currentUser);
 
 
+
   useEffect(() => {
     if (!currentUser) {
       router.push('login');
@@ -141,8 +142,23 @@ const Customers = React.memo(() => {
   
       // Start with an empty object for customerData
       const customerData = {};
+
+
+
+      if (currentUser?.tenantId) {
+        customerData.tenantId = currentUser.tenantId;
+      } else {
+        setErrorMessage('Tenant ID is missing. Please log in again.');
+        setSnackbarOpen(true);
+        setLoading(false);
+        return;
+      }
+
+
+
   
       // Only include fields that are either new or updated
+
       if (selectedCustomer?.firstName) customerData.firstName = selectedCustomer.firstName;
       if (selectedCustomer?.lastName) customerData.lastName = selectedCustomer.lastName;
       if (selectedCustomer?.email) customerData.email = selectedCustomer.email;

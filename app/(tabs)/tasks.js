@@ -4,8 +4,9 @@ import {
   StyleSheet,
   ActivityIndicator,
   FlatList,
+  Alert,
 } from "react-native";
-import { Appbar, Snackbar, Card, Title, Paragraph, Divider } from "react-native-paper";
+import { Appbar, Snackbar, Card, Title, Paragraph, Divider, Button } from "react-native-paper";
 import axios from "axios";
 import { useRouter } from "expo-router";
 
@@ -38,10 +39,21 @@ const FetchTasksScreen = () => {
     }
   };
 
+  const updateTaskStatus = async (taskId, newStatus) => {
+    try {
+      await axios.post(`${BASEURL}/update-task/${taskId}`, { status: newStatus });
+      Alert.alert("Success", `Task status updated to ${newStatus}.`);
+      fetchTasks(); // Refresh tasks after updating the status
+    } catch (error) {
+      console.error("Error updating task status:", error);
+      Alert.alert("Error", "Failed to update task status.");
+    }
+  };
+
   const renderTask = ({ item }) => (
     <Card
       style={styles.card}
-      onPress={() => router.push(`/tasks/${item.id}`)}
+      onPress={() => router.push(`/tasks/${item.id}`)} // Navigate to task details
     >
       <Card.Content>
         <Title>{item.type}</Title>
@@ -51,6 +63,23 @@ const FetchTasksScreen = () => {
           Created At: {new Date(item.createdAt).toLocaleString()}
         </Paragraph>
       </Card.Content>
+      <Card.Actions style={styles.cardActions}>
+        {["PENDING", "IN_PROGRESS", "COMPLETED", "CANCELED"].map((status) => (
+          <Button
+            key={status}
+            onPress={() => updateTaskStatus(item.id, status)} // Update task status
+            mode={item.status === status ? "contained" : "outlined"}
+            style={[
+              styles.statusButton,
+              status === "COMPLETED" && item.status === status && styles.greyedOutButton,
+            ]}
+            labelStyle={styles.buttonLabel}
+            disabled={status === "COMPLETED" && item.status === status} // Disable if task is completed
+          >
+            {status}
+          </Button>
+        ))}
+      </Card.Actions>
     </Card>
   );
 
@@ -121,10 +150,30 @@ const styles = StyleSheet.create({
     color: "#3f51b5", // Material UI primary color
   },
   card: {
-    marginVertical: 8,
+    marginVertical: 16,
     marginHorizontal: 16,
     borderRadius: 8,
     elevation: 2,
+    padding: 16,
+    minHeight: 180, // Increased height for better visibility
+  },
+  cardActions: {
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
+    marginTop: 20,
+  },
+  statusButton: {
+    marginRight: 8,
+    marginBottom: 8,
+    height: 40,
+    paddingHorizontal: 8,
+  },
+  greyedOutButton: {
+    backgroundColor: "#d3d3d3",
+    borderColor: "#d3d3d3",
+  },
+  buttonLabel: {
+    fontSize: 12, // Make the text smaller
   },
 });
 
