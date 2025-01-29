@@ -22,6 +22,7 @@ import UserManagement from './users';
 import Tasks from './tasks';
 import AssignTasks from './assignTasks';
 import ReportsPage from './reports';
+import TenantDetailsScreen from '../companyprofile/CompanyProfile'
 
 // Define role-based access to menu items
 const MENU_ITEMS = [
@@ -81,6 +82,8 @@ const MENU_ITEMS = [
     icon: 'person-outline',
     roles: ['ADMIN'],
   },
+
+
   {
     name: 'Reports',
     component: ReportsPage,
@@ -101,6 +104,14 @@ const MENU_ITEMS = [
     label: 'Assign Trash Bag Tasks',
     icon: 'person-add-outline',
     roles: ['ADMIN'], // Accessible by all roles
+  },
+
+  {
+    name: 'Company Profile',
+    component: TenantDetailsScreen,
+    label: 'Company Profile',
+    icon: 'business',
+    roles: ['ADMIN'],
   },
   {
     name: 'Profile',

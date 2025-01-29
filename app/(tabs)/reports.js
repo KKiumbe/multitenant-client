@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   View,
@@ -6,12 +7,17 @@ import {
   FlatList,
   TouchableOpacity,
   ImageBackground,
+  Alert,
 } from "react-native";
 import { Appbar } from "react-native-paper";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import { useTheme } from "react-native-paper";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing"; // ✅ Use expo-sharing
+import axios from "axios";
+import base64 from "base-64";
 
+// Reports Data with Downloadable Endpoints
 const reportsData = [
   {
     category: "Customer Reports",
@@ -20,27 +26,32 @@ const reportsData = [
       {
         title: "Active Customers Report",
         description: "List of all active customers with details like name, phone, and balance.",
-        route: "/reports/customer/active",
+        endpoint: "/reports/customers",
       },
       {
         title: "Dormant Customers Report",
         description: "List of all dormant customers with last activity date.",
-        route: "/reports/customer/dormant",
+        endpoint: "/reports/dormant'",
       },
       {
         title: "Age Analysis Report",
         description: "Pending payments grouped by months overdue.",
-        route: "/reports/customer/age-analysis",
+        endpoint: "/reports/age-analysis",
       },
       {
         title: "Garbage Collection Day Report",
         description: "Customers grouped by garbage collection day.",
-        route: "/reports/customer/collection-day",
+        endpoint: "/reports/customer-per-collection-day",
       },
       {
-        title: "Customer Balance Report",
-        description: "Customers grouped by closing balance range.",
-        route: "/reports/customer/balance",
+        title: "Customers with High Balance Report",
+        description: "Customers with more than twice their monthly charge.",
+        endpoint: "/reports/customers-debt-high",
+      },
+      {
+        title: "Customer with low Balance Report",
+        description: "Customers with balance less than their monthly charge.",
+        endpoint: "/reports/customers-debt-low",
       },
     ],
   },
@@ -48,49 +59,122 @@ const reportsData = [
     category: "Financial Reports",
     icon: "cash-outline",
     reports: [
+
+      {
+        title: "Monthly Income Report",
+        description: "Income generated in a specific month.",
+        endpoint: "/reports/income",
+      },
       {
         title: "Monthly Invoice Report",
         description: "Invoices generated in a specific month.",
-        route: "/reports/financial/monthly-invoice",
+        endpoint: "/reports/monthly-invoice",
       },
       {
         title: "Payment Report",
         description: "List of all payments with details.",
-        route: "/reports/financial/payment",
+        endpoint: "/reports/payments",
       },
       {
         title: "Outstanding Balances Report",
-        description: "Customers grouped by balance range.",
-        route: "/reports/financial/outstanding-balances",
+        description: "All Customers Balance for current month.",
+        endpoint: "/reports/outstanding-balances",
       },
       {
         title: "Receipt Report",
         description: "Receipts issued during a specific period.",
-        route: "/reports/financial/receipt",
+        endpoint: "/reports/receipts",
+      },
+      {
+        title: "Mpesa payments Report",
+        description: "All mpesa payments report .",
+        endpoint: "/reports/mpesa",
       },
     ],
   },
-  {
-    category: "Garbage Collection Reports",
-    icon: "trash-outline",
-    reports: [
-      {
-        title: "Garbage Collection History Report",
-        description: "All garbage collections by date and status.",
-        route: "/reports/garbage/history",
-      },
-      {
-        title: "Garbage Collection Day Summary",
-        description: "Collections grouped by the day of the week.",
-        route: "/reports/garbage/day-summary",
-      },
-    ],
-  },
+  // {
+  //   category: "Garbage Collection Reports",
+  //   icon: "trash-outline",
+  //   reports: [
+  //     {
+  //       title: "Garbage Collection History Report",
+  //       description: "All garbage collections by date and status.",
+  //       endpoint: "/api/reports/garbage/history",
+  //     },
+  //     {
+  //       title: "Garbage Collection Day Summary",
+  //       description: "Collections grouped by the day of the week.",
+  //       endpoint: "/api/reports/garbage/day-summary",
+  //     },
+  //   ],
+  // },
 ];
+
+// Function to Download and Open Report
+
+
+
+
+// Function to Download and Open Report
+const downloadAndOpenReport = async (endpoint, title) => {
+  try {
+    const fullUrl = `${process.env.EXPO_PUBLIC_API_URL}${endpoint}`;
+
+    console.log("Downloading from URL:", fullUrl);
+
+    const reportType = title.replace(/\s+/g, "_"); // Convert title to filename
+    const downloadPath = FileSystem.documentDirectory + `invoice-${reportType}.pdf`;
+ 
+    Alert.alert(
+      "Download Confirmation",
+      `Do you want to download ${title}?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Download",
+          onPress: async () => {
+            try {
+              // Fetch the report from the API
+              const response = await axios.get(fullUrl, {
+                responseType: "arraybuffer",
+              });
+
+              // Convert the ArrayBuffer to Base64
+              const uint8Array = new Uint8Array(response.data);
+              let binaryString = "";
+              for (let i = 0; i < uint8Array.length; i++) {
+                binaryString += String.fromCharCode(uint8Array[i]);
+              }
+              const base64Data = base64.encode(binaryString);
+
+              // Save the file
+              await FileSystem.writeAsStringAsync(downloadPath, base64Data, {
+                encoding: FileSystem.EncodingType.Base64,
+              });
+
+              // Open the file using expo-sharing
+              if (await Sharing.isAvailableAsync()) {
+                await Sharing.shareAsync(downloadPath);
+              } else {
+                Alert.alert("Error", "Sharing is not available on this device.");
+              }
+            } catch (error) {
+              Alert.alert("Error", "Failed to download the report.");
+              console.error("Download error:", error);
+            }
+          },
+        },
+      ]
+    );
+  } catch (error) {
+    Alert.alert("Error", "Something went wrong.");
+    console.error(error);
+  }
+};
+
 
 const ReportsPage = () => {
   const [expandedCategory, setExpandedCategory] = useState(null);
-  const router = useRouter();
   const theme = useTheme();
 
   const toggleCategory = (category) => {
@@ -100,7 +184,7 @@ const ReportsPage = () => {
   const renderReportItem = ({ item }) => (
     <TouchableOpacity
       style={[styles.reportItem, { backgroundColor: theme.colors.surface }]}
-      onPress={() => router.push(item.route)}
+      onPress={() => downloadAndOpenReport(item.endpoint, item.title)}
     >
       <Text style={[styles.reportTitle, { color: theme.colors.primary }]}>{item.title}</Text>
       <Text style={styles.reportDescription}>{item.description}</Text>
@@ -110,10 +194,7 @@ const ReportsPage = () => {
   const renderCategory = ({ item }) => (
     <View style={styles.categoryContainer}>
       <TouchableOpacity
-        style={[
-          styles.categoryHeader,
-          { backgroundColor: theme.colors.primaryContainer },
-        ]}
+        style={[styles.categoryHeader, { backgroundColor: theme.colors.primaryContainer }]}
         onPress={() => toggleCategory(item.category)}
       >
         <View style={styles.categoryHeaderContent}>
@@ -129,11 +210,7 @@ const ReportsPage = () => {
         />
       </TouchableOpacity>
       {expandedCategory === item.category && (
-        <FlatList
-          data={item.reports}
-          keyExtractor={(report) => report.title}
-          renderItem={renderReportItem}
-        />
+        <FlatList data={item.reports} keyExtractor={(report) => report.title} renderItem={renderReportItem} />
       )}
     </View>
   );
