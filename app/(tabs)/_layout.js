@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+
 import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Provider as PaperProvider } from 'react-native-paper';
@@ -162,7 +164,8 @@ export default function DrawerLayout() {
 
   return (
     
-      <PaperProvider>
+      <NavigationContainer>
+        <PaperProvider>
         <DrawerNavigator.Navigator
           initialRouteName="Home"
           screenOptions={({ navigation }) => ({
@@ -192,6 +195,7 @@ export default function DrawerLayout() {
           ))}
         </DrawerNavigator.Navigator>
       </PaperProvider>
+      </NavigationContainer>
     
   );
 }
