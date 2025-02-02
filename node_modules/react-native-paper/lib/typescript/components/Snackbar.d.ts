@@ -4,7 +4,7 @@ import Button from './Button/Button';
 import type { IconSource } from './Icon';
 import Surface from './Surface';
 import type { $Omit, $RemoveChildren, ThemeProp } from '../types';
-export declare type Props = $Omit<React.ComponentProps<typeof Surface>, 'mode'> & {
+export type Props = $Omit<React.ComponentProps<typeof Surface>, 'mode'> & {
     /**
      * Whether the Snackbar is currently visible.
      */

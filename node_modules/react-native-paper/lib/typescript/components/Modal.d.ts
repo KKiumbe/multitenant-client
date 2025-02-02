@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Animated, StyleProp, ViewStyle } from 'react-native';
 import type { ThemeProp } from '../types';
-export declare type Props = {
+export type Props = {
     /**
      * Determines whether clicking outside the modal dismiss it.
      */

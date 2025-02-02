@@ -1,13 +1,13 @@
 /// <reference types="react" />
 import { FlexAlignType, ColorValue } from 'react-native';
 import type { EllipsizeProp, InternalTheme } from 'src/types';
-declare type Description = React.ReactNode | ((props: {
+type Description = React.ReactNode | ((props: {
     selectable: boolean;
     ellipsizeMode: EllipsizeProp | undefined;
     color: string;
     fontSize: number;
 }) => React.ReactNode);
-export declare type Style = {
+export type Style = {
     marginLeft?: number;
     marginRight?: number;
     marginVertical?: number;

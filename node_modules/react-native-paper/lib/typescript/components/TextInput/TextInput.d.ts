@@ -4,7 +4,7 @@ import { Props as TextInputAffixProps } from './Adornment/TextInputAffix';
 import { Props as TextInputIconProps } from './Adornment/TextInputIcon';
 import type { RenderProps, TextInputLabelProp } from './types';
 import type { ThemeProp } from '../../types';
-export declare type Props = React.ComponentPropsWithRef<typeof NativeTextInput> & {
+export type Props = React.ComponentPropsWithRef<typeof NativeTextInput> & {
     /**
      * Mode of the TextInput.
      * - `flat` - flat input with an underline.
@@ -154,7 +154,7 @@ interface CompoundedComponent extends React.ForwardRefExoticComponent<Props & Re
     Icon: React.FunctionComponent<TextInputIconProps>;
     Affix: React.FunctionComponent<Partial<TextInputAffixProps>>;
 }
-declare type TextInputHandles = Pick<NativeTextInput, 'focus' | 'clear' | 'blur' | 'isFocused' | 'setNativeProps'>;
+type TextInputHandles = Pick<NativeTextInput, 'focus' | 'clear' | 'blur' | 'isFocused' | 'setNativeProps'>;
 /**
  * A component to allow users to input text.
  *

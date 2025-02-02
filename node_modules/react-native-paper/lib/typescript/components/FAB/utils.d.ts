@@ -1,12 +1,12 @@
 import { Animated, ColorValue, ViewStyle } from 'react-native';
 import type { InternalTheme } from '../../types';
-declare type GetCombinedStylesProps = {
+type GetCombinedStylesProps = {
     isAnimatedFromRight: boolean;
     isIconStatic: boolean;
     distance: number;
     animFAB: Animated.Value;
 };
-declare type CombinedStyles = {
+type CombinedStyles = {
     innerWrapper: Animated.WithAnimatedValue<ViewStyle>;
     iconWrapper: Animated.WithAnimatedValue<ViewStyle>;
     absoluteFill: Animated.WithAnimatedValue<ViewStyle>;

@@ -1,12 +1,12 @@
 import { LayoutRectangle, ViewStyle } from 'react-native';
-declare type ChildrenMeasurement = {
+type ChildrenMeasurement = {
     width: number;
     height: number;
     pageX: number;
     pageY: number;
 };
-declare type TooltipLayout = LayoutRectangle;
-export declare type Measurement = {
+type TooltipLayout = LayoutRectangle;
+export type Measurement = {
     children: ChildrenMeasurement;
     tooltip: TooltipLayout;
     measured: boolean;

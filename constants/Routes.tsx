@@ -1,0 +1,15 @@
+export const ROUTES = {
+    HOME: '/(tabs)/index.js',
+    COLLECTION: '/(tabs)/collection.js',
+    CUSTOMERS: '/(tabs)/customers.js',
+    INVOICES: '/(tabs)/invoices.js',
+    PAYMENTS: '/(tabs)/payments.js',
+    RECEIPTING: '/(tabs)/receipting.js',
+    MESSAGES: '/smsDelivery/delivery.js',
+    USERS: '/(tabs)/users.js',
+    REPORTS: '/(tabs)/reports.js',
+    TASKS: '/(tabs)/tasks.js',
+    ASSIGN_TASKS: '/(tabs)/assignTasks.js',
+    COMPANY_PROFILE: '/companyprofile/CompanyProfile.js',
+    PROFILE: '/profile.js',
+  } as const;

@@ -1,38 +1,43 @@
 {
   "expo": {
     "name": "TaQa",
-    "entryPoint": ".app/(tabs)/index.js",
     "slug": "client",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./icon.png",  
+    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./icon.png",  
+      "image": "./assets/images/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true
     },
-   
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./icon.png",  
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.kiumbe.taqa"
+      "package": "com.kiumbe.taqa",
+      "useCleartextTraffic": true
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./icon.png" 
+      "favicon": "./assets/images/icon.png"
     },
     "plugins": [
-      "expo-router"
-       
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "useCleartextTraffic": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

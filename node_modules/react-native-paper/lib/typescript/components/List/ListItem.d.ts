@@ -3,19 +3,19 @@ import { GestureResponderEvent, StyleProp, TextStyle, View, ViewStyle } from 're
 import { Style } from './utils';
 import type { $RemoveChildren, EllipsizeProp, ThemeProp } from '../../types';
 import TouchableRipple from '../TouchableRipple/TouchableRipple';
-declare type Title = React.ReactNode | ((props: {
+type Title = React.ReactNode | ((props: {
     selectable: boolean;
     ellipsizeMode: EllipsizeProp | undefined;
     color: string;
     fontSize: number;
 }) => React.ReactNode);
-declare type Description = React.ReactNode | ((props: {
+type Description = React.ReactNode | ((props: {
     selectable: boolean;
     ellipsizeMode: EllipsizeProp | undefined;
     color: string;
     fontSize: number;
 }) => React.ReactNode);
-export declare type Props = $RemoveChildren<typeof TouchableRipple> & {
+export type Props = $RemoveChildren<typeof TouchableRipple> & {
     /**
      * Title text for the list item.
      */

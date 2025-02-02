@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ColorValue, GestureResponderEvent, PressableAndroidRippleConfig, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import type { ThemeProp, MD3TypescaleKey } from '../../types';
-export declare type Props = {
+export type Props = {
     /**
      * Status of checkbox.
      */

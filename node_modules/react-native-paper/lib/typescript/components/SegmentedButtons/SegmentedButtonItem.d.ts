@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ColorValue, GestureResponderEvent, PressableAndroidRippleConfig, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import type { ThemeProp } from 'src/types';
 import type { IconSource } from '../Icon';
-export declare type Props = {
+export type Props = {
     /**
      * Whether the segmented button is checked
      */

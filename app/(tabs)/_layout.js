@@ -1,137 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Provider as PaperProvider } from 'react-native-paper';
-import { useColorScheme } from '@/hooks/useColorScheme';
-import { Colors } from '@/constants/Colors';
-import useAuthStore from '../../store/authStore';
 import { useRouter } from 'expo-router';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Drawer } from 'expo-router/drawer'; // Importing Drawer from expo-router
+import { Provider as PaperProvider } from 'react-native-paper';
+import useAuthStore from '../../store/authStore';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation for drawer toggle
+import { size } from '@shopify/react-native-skia';
+import Fontisto from '@expo/vector-icons/Fontisto';
+import Entypo from '@expo/vector-icons/Entypo';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
-// Components for each page
-import HomePage from './index';
-import CollectionPage from './collection';
-import CustomersPage from './customers';
-import InvoicesPage from './invoices';
-import PaymentsPage from './payments';
-import ReceiptingPage from './receipting';
-import ProfilePage from '../profile';
-import SMSoutbox from '../smsDelivery/delivery';
-import UserManagement from './users';
-import Tasks from './tasks';
-import AssignTasks from './assignTasks';
-import ReportsPage from './reports';
-import TenantDetailsScreen from '../companyprofile/CompanyProfile'
+import AntDesign from '@expo/vector-icons/AntDesign';
 
-// Define role-based access to menu items
-const MENU_ITEMS = [
-  {
-    name: 'Home',
-    component: HomePage,
-    label: 'Home',
-    icon: 'home-outline',
-    roles: [], // Accessible by all roles
-  },
-  {
-    name: 'Collection',
-    component: CollectionPage,
-    label: 'Collection',
-    icon: 'trash-outline',
-    roles: ['collector', 'ADMIN', 'customer_manager'],
-  },
-  {
-    name: 'Customers',
-    component: CustomersPage,
-    label: 'Customers',
-    icon: 'people-outline',
-    roles: ['ADMIN', 'customer_manager'],
-  },
-  {
-    name: 'Invoices',
-    component: InvoicesPage,
-    label: 'Invoices',
-    icon: 'document-text-outline',
-    roles: ['ADMIN', 'accountant', 'customer_manager'],
-  },
-  {
-    name: 'Payments',
-    component: PaymentsPage,
-    label: 'Payments',
-    icon: 'card-outline',
-    roles: ['ADMIN', 'accountant', 'customer_manager'],
-  },
-  {
-    name: 'Receipting',
-    component: ReceiptingPage,
-    label: 'Receipts',
-    icon: 'receipt-outline',
-    roles: ['ADMIN', 'accountant', 'customer_manager'],
-  },
-  {
-    name: 'Messages',
-    component: SMSoutbox,
-    label: 'Sent SMS',
-    icon: 'chatbubble-outline',
-    roles: ['ADMIN', 'customer_manager'],
-  },
-  {
-    name: 'Management',
-    component: UserManagement,
-    label: 'Users',
-    icon: 'person-outline',
-    roles: ['ADMIN'],
-  },
+import Octicons from '@expo/vector-icons/Octicons';
 
 
-  {
-    name: 'Reports',
-    component: ReportsPage,
-    label: 'Reports',
-    icon: 'document-attach',
-    roles: ['ADMIN'], // Accessible by all roles
-  },
-  {
-    name: 'Tasks',
-    component: Tasks,
-    label: 'Tasks',
-    icon: 'checkmark-done-outline',
-    roles: [], // Accessible by all roles
-  },
-  {
-    name: 'Assign Tasks',
-    component: AssignTasks,
-    label: 'Assign Trash Bag Tasks',
-    icon: 'person-add-outline',
-    roles: ['ADMIN'], // Accessible by all roles
-  },
 
-  {
-    name: 'Company Profile',
-    component: TenantDetailsScreen,
-    label: 'Company Profile',
-    icon: 'business',
-    roles: ['ADMIN'],
-  },
-  {
-    name: 'Profile',
-    component: ProfilePage,
-    label: 'Profile',
-    icon: 'person-outline',
-    roles: [], // Accessible by all roles
-  },
-];
-
-const DrawerNavigator = createDrawerNavigator();
-
-export default function DrawerLayout() {
+export default function Layout() {
   const router = useRouter();
   const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme || 'light'];
   const currentUser = useAuthStore((state) => state.currentUser);
   const isLoading = useAuthStore((state) => state.isLoading);
   const [isInitialized, setIsInitialized] = useState(false);
+
+
+  const navigation = useNavigation(); // Get navigation instance for drawer toggle
 
   useEffect(() => {
     const loadUser = async () => {
@@ -146,6 +46,7 @@ export default function DrawerLayout() {
       router.replace('/login');
     }
   }, [currentUser, isLoading, isInitialized, router]);
+  
 
   if (isLoading || !isInitialized) {
     return (
@@ -155,48 +56,277 @@ export default function DrawerLayout() {
     );
   }
 
-  // Filter menu items based on the user's roles
-  const accessibleMenuItems = MENU_ITEMS.filter(
-    (item) =>
-      item.roles.length === 0 || // Accessible by all roles
-      (currentUser?.role && currentUser.role.some((role) => item.roles.includes(role)))
-  );
+
 
   return (
-    
-      <NavigationContainer>
-        <PaperProvider>
-        <DrawerNavigator.Navigator
-          initialRouteName="Home"
-          screenOptions={({ navigation }) => ({
-            drawerActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-            headerShown: true,
-            headerLeft: () => (
-              <Ionicons
-                name="menu"
-                size={30}
-                color={Colors[colorScheme ?? 'light'].text}
-                style={{ marginLeft: 10 }}
-                onPress={() => navigation.toggleDrawer()}
-              />
-            ),
-          })}
-        >
-          {accessibleMenuItems.map((item) => (
-            <DrawerNavigator.Screen
-              key={item.name}
-              name={item.name}
-              component={item.component}
-              options={{
-                drawerLabel: item.label,
-                drawerIcon: ({ color, size }) => <Ionicons name={item.icon} color={color} size={size} />,
-              }}
-            />
-          ))}
-        </DrawerNavigator.Navigator>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <PaperProvider>
+        <Drawer>
+          {/* Home */}
+          <Drawer.Screen
+            name="index"
+            options={{
+              drawerLabel:'Home',
+              headerTitle:'Home',
+              headerShown: true,
+              drawerIcon:({
+                size,color
+              })=>(
+                <Ionicons 
+                name='home-outline' size={size} color={color}
+                />
+
+              ),
+              
+            }}
+          />
+
+          {/* Customers */}
+          <Drawer.Screen
+            name="customers"
+            options={{
+              headerShown: true,
+              drawerLabel:'Customers',
+              headerTitle:'Customers',
+              headerShown: true,
+              drawerIcon:({
+                size,color
+              })=>(
+               
+                <Fontisto name="persons" size={24} color="black" />
+                //name='persons' size={size} color={color}
+                
+
+              ),
+              
+            }}
+          />
+
+          {/* Collection */}
+          <Drawer.Screen
+            name="collection"
+            options={{
+              headerShown: true,
+              drawerLabel:'Collection',
+              headerTitle:'Collection',
+              drawerIcon:({
+                size,color
+              })=>(
+                <Entypo name="trash" size={24} color="black" />
+
+              ),
+              
+            }}
+          />
+
+          {/* Invoices */}
+          <Drawer.Screen
+            name="invoices"
+            options={{
+              headerShown: true,
+              drawerLabel:'Invoices',
+              headerTitle:'Invoices',
+              drawerIcon:({
+                size,color
+              })=>(
+                <FontAwesome6 name="file-invoice-dollar" size={24} color="black" />
+
+              ),
+              
+            }}
+          />
+          
+          {/* Payments */}
+          <Drawer.Screen
+            name="payments"
+            options={{
+              headerShown: true,
+              drawerLabel:'Payments',
+              headerTitle:'Payments',
+              drawerIcon:({
+                size,color
+              })=>(
+                <MaterialIcons name="payments" size={24} color="black" />
+
+              ),
+              
+            }}
+          />
+
+          {/* Receipting */}
+          <Drawer.Screen
+            name="receipting"
+            options={{
+              headerShown: true,
+              drawerLabel:'Receipts',
+              headerTitle:'Receipts',
+              drawerIcon:({
+                size,color
+              })=>(
+                <MaterialIcons name="receipt" size={24} color="black" />
+
+              ),
+              
+            }}
+          />
+
+
+              <Drawer.Screen
+            name="delivery"
+            options={{
+              headerShown: true,
+              drawerLabel:'Sent SMS',
+              headerTitle:'sent SMS',
+              drawerIcon:({
+                size,color
+              })=>(
+                
+                <AntDesign name="message1" size={24} color="black" />
+
+              ),
+              
+            }}
+          />
+
+          {/* Reports */}
+          <Drawer.Screen
+            name="reports"
+            options={{
+              headerShown: true,
+              drawerLabel:'Reports',
+              headerTitle:'Reports',
+              drawerIcon:({
+                size,color
+              })=>(
+                <Ionicons name="documents" size={24} color="black" />
+
+              ),
+              
+            }}
+          />
+
+          {/* Tasks */}
+          <Drawer.Screen
+            name="tasks"
+            options={{
+              headerShown: true,
+              drawerLabel:'Tasks',
+              headerTitle:'Tasks',
+              drawerIcon:({
+                size,color
+              })=>(
+                <FontAwesome5 name="tasks" size={24} color="black" />
+
+              ),
+              
+            }}
+          />
+
+
+           <Drawer.Screen
+            name="assignTasks"
+            options={{
+              headerShown: true,
+              drawerLabel:'Assigned Tasks',
+              headerTitle:'Assigned Tasks',
+
+              drawerIcon:({
+                size,color
+              })=>(
+                <MaterialIcons name="assignment" size={24} color="black" />
+
+              ),
+              
+            }}
+
+            
+
+
+
+
+          />
+  
+          {/* Users */}
+          <Drawer.Screen
+            name="users"
+            options={{
+              headerShown: true,
+              drawerLabel:'Users',
+              headerTitle:'Users',
+
+              drawerIcon:({
+                size,color
+              })=>(
+                <Entypo name="users" size={24} color="black" />
+
+              ),
+              
+            }}
+
+            //<MaterialIcons name="assignment" size={24} color="black" />
+
+
+
+
+          />
+
+
+
+
+           <Drawer.Screen
+            name="profile"
+            options={{
+              headerShown: true,
+              drawerLabel:'Profile',
+              headerTitle:'Profile',
+
+              drawerIcon:({
+                size,color
+              })=>(
+                <AntDesign name="login" size={24} color="black" />
+
+              ),
+              
+            }}
+
+            //<MaterialIcons name="assignment" size={24} color="black" />
+
+            
+
+
+          />
+
+
+            <Drawer.Screen
+            name="CompanyProfile"
+            options={{
+              headerShown: true,
+              drawerLabel:'Company Profile',
+              headerTitle:'Company Profile',
+
+              drawerIcon:({
+                size,color
+              })=>(
+                <Octicons name="organization" size={24} color="black" />
+
+              ),
+              
+            }}
+
+            //<MaterialIcons name="assignment" size={24} color="black" />
+
+            
+
+
+          />
+
+
+
+
+
+        </Drawer>
       </PaperProvider>
-      </NavigationContainer>
-    
+    </GestureHandlerRootView>
   );
 }
 
@@ -205,5 +335,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  icon: {
+    marginRight: -8,
+  },
+  drawerLabel: {
+    fontSize: 18,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    color: 'black', // Default color
+  },
+  focusedDrawerLabel: {
+    fontWeight: 'bold', // Highlight focused item
+    color: 'blue', // Customize focus color
   },
 });

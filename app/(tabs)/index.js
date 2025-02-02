@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView, ActivityIndicator, Modal, TextInput, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView, ActivityIndicator, Modal, TextInput, Alert ,RefreshControl} from 'react-native';
 import { Text, Button, Card, Divider } from 'react-native-paper';
 import { router } from 'expo-router';
 import useAuthStore from '../../store/authStore';
@@ -24,6 +24,7 @@ const HomeScreen = () => {
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [downloadingReport, setDownloadingReport] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
 
   const currentUser = useAuthStore(state => state.currentUser);
@@ -52,6 +53,11 @@ const HomeScreen = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    fetchDashboardStats().then(() => setRefreshing(false));
   };
 
   const fetchSmsBalance = async () => {
@@ -174,30 +180,32 @@ const HomeScreen = () => {
   const pieChartData = [
     {
       key: 'All Customers',
-      value: dashboardStats?.totalCustomers || 0,
-      svg: { fill: '#2196f3' }, // Single color for all customers
+      value: dashboardStats?.totalCustomers ?? 0, 
+      color: '#9C27B0'
+      // Use 0 if undefined or null
+      //svg: { fill: '#9C27B0' }, 
     },
     { 
       key: 'Unpaid', 
-      value: dashboardStats?.unpaidCustomers || 0, 
-      svg: { fill: '#f44336' },
-      percentage: calculatePercentage(dashboardStats?.unpaidCustomers || 0)
+      value: dashboardStats?.unpaidCustomers ?? 0, // Default to 0
+      //svg: { fill: '#f44336' },
+       color: 'color',
+      percentage: calculatePercentage(dashboardStats?.unpaidCustomers ?? 0),
     },
     { 
       key: 'Low Balance', 
-      value: dashboardStats?.lowBalanceCustomers || 0, 
+      value: dashboardStats?.lowBalanceCustomers ?? 0, 
       svg: { fill: '#e1bee7' },
-      percentage: calculatePercentage(dashboardStats?.lowBalanceCustomers || 0)
+      percentage: calculatePercentage(dashboardStats?.lowBalanceCustomers ?? 0),
     },
     { 
       key: 'High Balance', 
-      value: dashboardStats?.highBalanceCustomers || 0, 
+      value: dashboardStats?.highBalanceCustomers ?? 0, 
       svg: { fill: '#3f51b5' },
-      percentage: calculatePercentage(dashboardStats?.highBalanceCustomers || 0)
+      percentage: calculatePercentage(dashboardStats?.highBalanceCustomers ?? 0),
     },
-
-
   ];
+  
 
 
 
@@ -231,7 +239,10 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+
+      >
         <Text style={styles.welcomeMessage}>
           Welcome {currentUser?.firstName || 'User'}!
         </Text>
@@ -248,14 +259,14 @@ const HomeScreen = () => {
     {/* Pass the correct data for All Customers */}
  
     <Text style={styles.modalTitle}>
-      Customers: {dashboardStats?.totalCustomers}
+      Total Customers: {dashboardStats?.totalCustomers}
     </Text>
  
 
     <CustomPieChart
       data={[
         {
-          key: 'All Customers',
+          key: ` ${dashboardStats?.totalCustomers}`,
           value: dashboardStats?.totalCustomers || 0,
           svg: { fill: '#9C27B0' }, // Single color for all customers
         },

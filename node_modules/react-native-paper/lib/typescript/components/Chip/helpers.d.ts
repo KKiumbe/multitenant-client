@@ -1,6 +1,6 @@
 import type { ColorValue } from 'react-native';
 import type { InternalTheme } from '../../types';
-declare type BaseProps = {
+type BaseProps = {
     theme: InternalTheme;
     isOutlined: boolean;
     disabled?: boolean;

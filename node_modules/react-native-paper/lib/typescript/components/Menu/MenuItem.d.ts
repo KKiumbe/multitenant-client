@@ -2,7 +2,7 @@ import * as React from 'react';
 import { AccessibilityState, ColorValue, GestureResponderEvent, PressableAndroidRippleConfig, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import type { ThemeProp } from '../../types';
 import { IconSource } from '../Icon';
-export declare type Props = {
+export type Props = {
     /**
      * Title text for the `MenuItem`.
      */

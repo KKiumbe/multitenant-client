@@ -4,9 +4,9 @@ import { Animated, GestureResponderEvent, StyleProp, ViewStyle } from 'react-nat
 import type { $Omit, $RemoveChildren, ThemeProp } from '../../types';
 import type { IconSource } from '../Icon';
 import Surface from '../Surface';
-export declare type AnimatedFABIconMode = 'static' | 'dynamic';
-export declare type AnimatedFABAnimateFrom = 'left' | 'right';
-export declare type Props = $Omit<$RemoveChildren<typeof Surface>, 'mode'> & {
+export type AnimatedFABIconMode = 'static' | 'dynamic';
+export type AnimatedFABAnimateFrom = 'left' | 'right';
+export type Props = $Omit<$RemoveChildren<typeof Surface>, 'mode'> & {
     /**
      * Icon to display for the `FAB`.
      */

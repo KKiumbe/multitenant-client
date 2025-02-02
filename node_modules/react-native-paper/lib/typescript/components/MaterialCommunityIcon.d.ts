@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Role } from 'react-native';
-export declare type IconProps = {
+export type IconProps = {
     name: string;
     color?: string;
     size: number;
@@ -8,7 +8,7 @@ export declare type IconProps = {
     allowFontScaling?: boolean;
     testID?: string;
 };
-declare type AccessibilityProps = {
+type AccessibilityProps = {
     role?: Role;
     focusable?: boolean;
 } | {

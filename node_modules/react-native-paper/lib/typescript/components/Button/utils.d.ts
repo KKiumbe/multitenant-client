@@ -1,5 +1,5 @@
 import type { InternalTheme } from '../../types';
-export declare type ButtonMode = 'text' | 'outlined' | 'contained' | 'elevated' | 'contained-tonal';
+export type ButtonMode = 'text' | 'outlined' | 'contained' | 'elevated' | 'contained-tonal';
 export declare const getButtonColors: ({ theme, mode, customButtonColor, customTextColor, disabled, dark, }: {
     theme: InternalTheme;
     mode: ButtonMode;

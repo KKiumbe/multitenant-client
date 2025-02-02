@@ -2,7 +2,7 @@ import * as React from 'react';
 import { GestureResponderEvent, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import type { ThemeProp } from 'src/types';
 import type { IconSource } from '../Icon';
-declare type ConditionalValue = {
+type ConditionalValue = {
     /**
      * Array of the currently selected segmented button values.
      */
@@ -29,7 +29,7 @@ declare type ConditionalValue = {
      */
     onValueChange: (value: string) => void;
 };
-export declare type Props = {
+export type Props = {
     /**
      * Buttons to display as options in toggle button.
      * Button should contain the following properties:

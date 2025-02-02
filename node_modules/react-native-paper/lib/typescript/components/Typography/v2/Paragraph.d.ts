@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TextProps } from 'react-native';
-export declare type Props = TextProps & {
+export type Props = TextProps & {
     children: React.ReactNode;
 };
 /**

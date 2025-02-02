@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Animated, ColorValue, GestureResponderEvent, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import type { ThemeProp } from '../../types';
 import type { IconSource } from '../Icon';
-export declare type Props = {
+export type Props = {
     /**
      * Action items to display in the form of a speed dial.
      * An action item should contain the following properties:

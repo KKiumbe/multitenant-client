@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ColorValue, GestureResponderEvent, StyleProp, TextStyle, ViewProps, ViewStyle, PressableAndroidRippleConfig } from 'react-native';
 import type { Style } from './utils';
 import type { ThemeProp } from '../../types';
-export declare type Props = {
+export type Props = {
     /**
      * Title text for the list accordion.
      */

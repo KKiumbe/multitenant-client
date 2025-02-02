@@ -1,53 +1,46 @@
 import React from 'react';
-import { PieChart } from 'react-native-svg-charts';
-import { Text, G } from 'react-native-svg';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { PieChart } from 'react-native-gifted-charts';
 
-const CustomPieChart = ({ data, chartStyle, labelStyle }) => {
-  if (!data || data.length === 0) return null;
+const screenWidth = Dimensions.get('window').width;
 
-  const totalValue = data.reduce((sum, item) => sum + item.value, 0); // Calculate total sum
+const CustomChart = ({ data }) => {
+  // Extract series and slice colors from the data
 
-  const pieData = data.map((item, index) => ({
-    value: item.value,
-    svg: item.svg,
-    key: `pie-${index}`,
-    onPress: () => console.log(`${item.key} pressed`),
+  const pieData = data.map(item => ({
+    value: item.value ?? 0,
+    color: item.svg.fill,  // This is where we set the color for each slice
+    text: item.key,        // Optional: Add labels for each slice
   }));
-
-  const Labels = ({ slices }) =>
-    slices.map((slice, index) => {
-      const { pieCentroid, data } = slice;
-      const percentage = ((data.value / totalValue) * 100).toFixed(1) + '%'; // Percentage based on total value
-
-      return (
-        <G key={`label-${index}`}>
-          <Text
-            x={pieCentroid[0]}
-            y={pieCentroid[1]}
-            fill={labelStyle?.color || 'white'}
-            textAnchor={'middle'}
-            alignmentBaseline={'middle'}
-            fontSize={labelStyle?.fontSize || 10} // Reduced font size
-            stroke={labelStyle?.stroke || 'black'}
-            strokeWidth={labelStyle?.strokeWidth || 0.2}
-          >
-            {data.value} 
-          </Text>
-        </G>
-      );
-    });
-
   return (
-    <PieChart
-      style={[{ height: 200 }, chartStyle]}
-      valueAccessor={({ item }) => item.value}
-      data={pieData}
-      spacing={0}
-      outerRadius={'95%'}
-    >
-      <Labels />
-    </PieChart>
+    <View style={styles.container}>
+    
+      <PieChart
+         data={pieData} 
+        width={screenWidth / 2}
+        height={screenWidth / 2}
+        radius={120}
+        innerRadius={30}
+        showText={true}
+        textColor="#fff"
+        textStyle={{ fontSize: 14 }}
+      />
+    </View>
   );
 };
 
-export default CustomPieChart;
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+});
+
+export default CustomChart;

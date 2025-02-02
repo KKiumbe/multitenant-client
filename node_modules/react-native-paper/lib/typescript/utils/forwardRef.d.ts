@@ -1,5 +1,5 @@
 import type { ForwardRefRenderFunction, PropsWithoutRef, RefAttributes, ForwardRefExoticComponent } from 'react';
-export declare type ForwardRefComponent<T, P = {}> = ForwardRefExoticComponent<PropsWithoutRef<P> & RefAttributes<T>>;
+export type ForwardRefComponent<T, P = {}> = ForwardRefExoticComponent<PropsWithoutRef<P> & RefAttributes<T>>;
 /**
  * TypeScript generated a large union of props from `ViewProps` in
  * `d.ts` files when using `React.forwardRef`. To prevent this
