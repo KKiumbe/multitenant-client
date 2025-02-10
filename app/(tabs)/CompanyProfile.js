@@ -134,7 +134,7 @@ const handleUpdateTenantLogo = async (imageUri) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Title style={styles.title}>Edit Tenant Details</Title>
+      <Title style={styles.title}>Edit Company Details</Title>
       <Divider style={styles.divider} />
 
       {/* Logo Upload Section */}
@@ -174,7 +174,7 @@ const handleUpdateTenantLogo = async (imageUri) => {
       <EditableField label="Street" value={tenant?.street} onChangeText={text => setTenant({ ...tenant, street: text })} />
 
       <Button mode="contained" onPress={handleUpdateTenant} loading={updating} style={styles.button}>
-        Update Tenant
+        Update
       </Button>
     </ScrollView>
   );
